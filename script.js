@@ -1,5 +1,8 @@
 const canvas = document.getElementById("canvas");
 const colors = ["Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Lime"];
+let pickRandomColor = function (colors) {
+  return colors[Math.floor(Math.random() * colors.length)];
+};
 
 class Block {
   constructor(canvas, col = 0, row = 0, blockSize = 10, colors = ["Blue"]) {
@@ -42,13 +45,14 @@ class Apple {
   constructor(canvas) {
     this.block = new Block(canvas, 10, 10);
     this.canvas = canvas;
+    this.color = pickRandomColor(colors);
   }
 
   //   draw() {
   //     this.block.drawCircle("LimeGreen");
   //   }
   draw = function () {
-    this.block.drawCircle("LimeGreen");
+    this.block.drawCircle(this.color);
   };
   move() {
     let widthInBlocks = this.canvas.width / this.block.blockSize;
@@ -56,6 +60,7 @@ class Apple {
     const randomCol = Math.floor(Math.random() * (widthInBlocks - 2)) + 1;
     const randomRow = Math.floor(Math.random() * (heightInBlocks - 2)) + 1;
     this.block = new Block(canvas, randomCol, randomRow);
+    this.color = pickRandomColor(colors);
   }
 }
 
@@ -69,10 +74,12 @@ class Snake {
     this.canvas = canvas;
     this.direction = "right";
     this.nextDirection = "right";
+    this.color = pickRandomColor(colors);
   }
+
   draw = function () {
     for (var i = 0; i < this.segments.length; i++) {
-      this.segments[i].drawSquare("Blue");
+      this.segments[i].drawSquare(this.color);
     }
   };
   move = function (apple, game) {
@@ -98,6 +105,7 @@ class Snake {
     this.segments.unshift(newHead);
     if (newHead.equal(apple.block)) {
       game.score++;
+      this.color = apple.color;
       apple.move();
     } else {
       this.segments.pop();
